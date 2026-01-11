@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+.env
+
+# ML artifacts
+models/*.pkl
+models/*.joblib
+mlruns/
+mlartifacts/
+
+# Data
+data/raw/
+data/processed/
+*.csv
+
+# Logs
+logs/
+*.log
+
+# Airflow
+airflow.db
+airflow.cfg
+webserver_config.py
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# Secrets
+*.pem
+*.key
+credentials.json
+
+# Claude
+.claude/

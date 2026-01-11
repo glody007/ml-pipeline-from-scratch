@@ -1,0 +1,39 @@
+features:
+  numeric:
+    - age
+    - income
+    - tenure_months
+    - monthly_charges
+    - total_charges
+
+  categorical:
+    - gender
+    - region
+
+  derived:
+    charges_per_month:
+      formula: "total_charges / (tenure_months + 1)"
+    income_to_charges_ratio:
+      formula: "income / (monthly_charges + 1)"
+
+  binary:
+    is_high_value:
+      condition: "monthly_charges > 70"
+
+  binned:
+    age_group:
+      source: age
+      bins: [0, 25, 35, 50, 65, 120]
+      labels: ["young", "adult", "middle_aged", "senior", "elderly"]
+    tenure_group:
+      source: tenure_months
+      bins: [0, 12, 24, 48, 1000]
+      labels: ["new", "established", "loyal", "veteran"]
+
+  imputation:
+    numeric: median
+    categorical: most_frequent
+
+  scaling: standard
+
+  target: churn

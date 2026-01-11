@@ -1,0 +1,42 @@
+stages:
+  validate:
+    cmd: python src/schema.py
+    deps:
+      - data/raw/customers.csv
+      - configs/schema.yaml
+      - src/schema.py
+    outs:
+      - data/validation_report.json
+
+  feature_engineering:
+    cmd: python src/features.py
+    deps:
+      - data/raw/customers.csv
+      - configs/features.yaml
+      - src/features.py
+    outs:
+      - data/processed/customers_featured.csv
+      - models/feature_engineer.pkl
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - data/processed/customers_featured.csv
+      - configs/model.yaml
+      - src/train.py
+    outs:
+      - models/model.pkl
+    metrics:
+      - models/metrics.yaml:
+          cache: false
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - models/model.pkl
+      - models/metrics.yaml
+      - configs/deployment.yaml
+      - src/evaluate.py
+    metrics:
+      - models/evaluation_report.yaml:
+          cache: false

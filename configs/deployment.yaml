@@ -1,0 +1,18 @@
+thresholds:
+  minimum:
+    accuracy: 0.75
+    precision: 0.70
+    recall: 0.70
+    f1: 0.72
+    roc_auc: 0.75
+
+regression_tolerance: 0.05
+
+inference_tests:
+  - name: sample_prediction
+    type: prediction_test
+  - name: latency_check
+    type: latency_test
+    max_latency_ms: 100
+  - name: determinism_check
+    type: determinism_test

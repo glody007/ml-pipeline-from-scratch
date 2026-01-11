@@ -1,0 +1,47 @@
+{
+  "is_valid": true,
+  "errors": [],
+  "warnings": [],
+  "stats": {
+    "row_count": 1000,
+    "column_count": 9,
+    "missing_values": {
+      "customer_id": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "age": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "income": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "gender": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "region": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "tenure_months": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "monthly_charges": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "total_charges": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "churn": {
+        "count": 0,
+        "percentage": 0.0
+      }
+    }
+  }
+}
