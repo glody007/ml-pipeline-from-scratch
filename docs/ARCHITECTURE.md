@@ -527,13 +527,13 @@ api:
 - [ ] Remove `./src` volume mount
 - [ ] Set `MODEL_SOURCE=mlflow`
 - [ ] Configure remote MLflow server
-- [ ] Set up DVC remote storage (S3/GCS)
-- [ ] Add monitoring/alerting (Prometheus/Grafana)
-- [ ] Configure secrets management (Vault/AWS Secrets)
-- [ ] Set up CI/CD pipeline (GitHub Actions)
+- [ ] Set up DVC remote storage 
+- [ ] Add monitoring/alerting 
+- [ ] Configure secrets management 
+- [ ] Set up CI/CD pipeline 
 - [ ] Add health check endpoints monitoring
 - [ ] Configure auto-scaling for API
-- [ ] Set up logging aggregation (ELK/CloudWatch)
+- [ ] Set up logging aggregation 
 
 ---
 
