@@ -5,4 +5,4 @@ metrics:
   recall: 0.08620689655172414
   roc_auc: 0.4607819329771734
 model_name: gradient_boosting
-timestamp: '2026-01-11T10:38:04.563511'
+timestamp: '2026-01-11T12:16:02.683117'
