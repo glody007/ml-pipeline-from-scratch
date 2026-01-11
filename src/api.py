@@ -1,18 +1,24 @@
 """FastAPI serving endpoint for model predictions."""
 
 import logging
+import os
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Configuration from environment variables
+MODEL_SOURCE = os.getenv("MODEL_SOURCE", "file")  # "file" or "mlflow"
+MODEL_PATH = os.getenv("MODEL_PATH", "models/model.pkl")
+MLFLOW_MODEL_URI = os.getenv("MLFLOW_MODEL_URI", "models:/churn_predictor/latest")
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "file:///app/mlruns")
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -23,8 +29,8 @@ app = FastAPI(
 
 # Global model variable
 MODEL = None
-MODEL_PATH = "models/model.pkl"
 MODEL_LOADED_AT = None
+MODEL_INFO = {}
 
 
 class CustomerInput(BaseModel):
@@ -55,25 +61,41 @@ class HealthResponse(BaseModel):
 
 class ModelInfoResponse(BaseModel):
     """Response schema for model info."""
-    model_path: str
+    source: str
+    uri: str
     loaded_at: Optional[str]
 
 
 @app.on_event("startup")
 async def load_model():
-    """Load model at startup."""
-    global MODEL, MODEL_LOADED_AT
+    """Load model at startup from file or MLflow."""
+    global MODEL, MODEL_LOADED_AT, MODEL_INFO
 
-    if Path(MODEL_PATH).exists():
-        try:
-            MODEL = joblib.load(MODEL_PATH)
-            MODEL_LOADED_AT = datetime.now().isoformat()
-            logger.info(f"Model loaded from {MODEL_PATH}")
-        except Exception as e:
-            logger.error(f"Failed to load model: {e}")
-            MODEL = None
-    else:
-        logger.warning(f"Model file not found at {MODEL_PATH}")
+    try:
+        if MODEL_SOURCE == "mlflow":
+            # Load from MLflow Model Registry
+            import mlflow
+            mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+            logger.info(f"Loading model from MLflow: {MLFLOW_MODEL_URI}")
+            MODEL = mlflow.sklearn.load_model(MLFLOW_MODEL_URI)
+            MODEL_INFO = {"source": "mlflow", "uri": MLFLOW_MODEL_URI}
+            logger.info(f"Model loaded from MLflow: {MLFLOW_MODEL_URI}")
+        else:
+            # Load from local file
+            import joblib
+            if Path(MODEL_PATH).exists():
+                MODEL = joblib.load(MODEL_PATH)
+                MODEL_INFO = {"source": "file", "path": MODEL_PATH}
+                logger.info(f"Model loaded from file: {MODEL_PATH}")
+            else:
+                logger.warning(f"Model file not found at {MODEL_PATH}")
+                return
+
+        MODEL_LOADED_AT = datetime.now().isoformat()
+
+    except Exception as e:
+        logger.error(f"Failed to load model: {e}")
+        MODEL = None
 
 
 @app.post("/predict", response_model=PredictionResponse)
@@ -137,10 +159,11 @@ async def model_info() -> ModelInfoResponse:
     """Get information about the loaded model.
 
     Returns:
-        Model path and load timestamp
+        Model source, URI, and load timestamp
     """
     return ModelInfoResponse(
-        model_path=MODEL_PATH,
+        source=MODEL_INFO.get("source", "unknown"),
+        uri=MODEL_INFO.get("uri") or MODEL_INFO.get("path", "unknown"),
         loaded_at=MODEL_LOADED_AT,
     )
 

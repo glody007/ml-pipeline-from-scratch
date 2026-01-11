@@ -2,6 +2,8 @@
 
 A complete end-to-end machine learning pipeline demonstrating production best practices for customer churn prediction.
 
+> **📖 Full Documentation**: See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture, diagrams, and configuration options.
+
 ## Overview
 
 This project demonstrates:
@@ -11,6 +13,7 @@ This project demonstrates:
 - **Evaluation Gate**: Quality thresholds before deployment
 - **Airflow Orchestration**: Automated pipeline execution
 - **DVC Versioning**: Track data and model versions
+- **API Serving**: FastAPI for real-time predictions
 
 ## Project Structure
 

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+joblib
+pandas
+scikit-learn==1.3.2
+pyyaml
+pydantic
+mlflow
+dill
