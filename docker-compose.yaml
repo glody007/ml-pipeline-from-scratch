@@ -16,6 +16,7 @@ services:
       - ./configs:/opt/airflow/configs
       - ./data:/opt/airflow/data
       - ./models:/opt/airflow/models
+      - ./mlruns:/opt/airflow/mlruns
     ports:
       - "8080:8080"
     command: airflow standalone

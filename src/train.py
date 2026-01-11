@@ -105,6 +105,9 @@ def train_model(
     logger.info(f"Loading data from {data_path}")
     df = pd.read_csv(data_path)
 
+    # Create MLflow dataset for tracking
+    dataset = mlflow.data.from_pandas(df, source=data_path, name="customer_churn")
+
     # Prepare features and target
     # Drop customer_id if present (it's an identifier, not a feature)
     drop_cols = [target]
@@ -134,6 +137,9 @@ def train_model(
         logger.info(f"Training model: {model_name}")
 
         with mlflow.start_run(run_name=model_name):
+            # Log dataset
+            mlflow.log_input(dataset, context="training")
+
             # Build model
             model_class = load_model_class(model_def["class"])
             model_params = model_def.get("params", {})
@@ -180,6 +186,13 @@ def train_model(
             for metric_name, metric_value in metrics.items():
                 mlflow.log_metric(metric_name, metric_value)
                 logger.info(f"  {metric_name}: {metric_value:.4f}")
+
+            # Log model as MLflow artifact and register it
+            mlflow.sklearn.log_model(
+                pipeline,
+                "model",
+                registered_model_name="churn_predictor"
+            )
 
             # Track best model
             if metrics["f1"] > best_f1:
